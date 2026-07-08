@@ -3,69 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Local Storage Form</title>
+<title>Student Fees Form</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
 
 body{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    background:#f4f4f4;
+font-family:Arial;
+background:#f4f4f4;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
 .container{
-    width:350px;
-    background:#fff;
-    padding:25px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,.2);
-}
-
-h2{
-    text-align:center;
-    margin-bottom:20px;
+background:white;
+padding:30px;
+width:400px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.2);
 }
 
 input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:1px solid #ccc;
-    border-radius:5px;
-    font-size:16px;
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:6px;
 }
 
 button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    background:#007BFF;
-    color:#fff;
-    font-size:16px;
-    border-radius:5px;
-    cursor:pointer;
+width:100%;
+padding:12px;
+background:#4CAF50;
+color:white;
+border:none;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
 }
 
 button:hover{
-    background:#0056b3;
+background:#388E3C;
 }
 
-#clearBtn{
-    background:#dc3545;
+#message{
+margin-top:15px;
+font-weight:bold;
+text-align:center;
 }
 
-#clearBtn:hover{
-    background:#b02a37;
-}
 </style>
 
 </head>
@@ -73,60 +62,84 @@ button:hover{
 
 <div class="container">
 
-<h2>Local Storage Form</h2>
+<h2>Student Fees Form</h2>
 
-<input type="text" id="fname" placeholder="First Name">
+<form id="studentForm">
 
-<input type="text" id="lname" placeholder="Last Name">
+<input
+type="text"
+id="username"
+placeholder="Student Name"
+required
+>
 
-<button onclick="saveData()">Save</button>
+<input
+type="email"
+id="email"
+placeholder="Email Address"
+required
+>
 
-<button id="clearBtn" onclick="clearData()">Clear</button>
+<input
+type="text"
+id="phone"
+placeholder="Phone Number"
+required
+>
+
+<button type="submit">
+Save Student
+</button>
+
+</form>
+
+<div id="message"></div>
 
 </div>
 
 <script>
 
-// Page load hote hi data show kare
-window.onload = function(){
+const supabaseUrl = "https://zwczrfjffrfdwsvzlymn.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3Y3pyZmpmZnJmZHdzdnpseW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5ODg2ODEsImV4cCI6MjA5ODU2NDY4MX0.5OE7HUaNnoKWGY2CF533m921zOSVnckCMJmDTQ8LSmE";
 
-    document.getElementById("fname").value =
-        localStorage.getItem("firstName") || "";
+const supabase = window.supabase.createClient(
+supabaseUrl,
+supabaseKey
+);
 
-    document.getElementById("lname").value =
-        localStorage.getItem("lastName") || "";
+const form = document.getElementById("studentForm");
+
+form.addEventListener("submit", async(e)=>{
+
+e.preventDefault();
+
+const username=document.getElementById("username").value;
+const email=document.getElementById("email").value;
+const phone=document.getElementById("phone").value;
+
+const {error}=await supabase
+.from("students")
+.insert([
+{
+username,
+email,
+phone
+}
+]);
+
+if(error){
+
+document.getElementById("message").innerHTML="❌ "+error.message;
+
+}else{
+
+document.getElementById("message").innerHTML="✅ Student Saved Successfully";
+
+form.reset();
+
 }
 
-
-// Save Function
-function saveData(){
-
-    let firstName = document.getElementById("fname").value;
-
-    let lastName = document.getElementById("lname").value;
-
-    localStorage.setItem("firstName", firstName);
-
-    localStorage.setItem("lastName", lastName);
-
-    alert("Data Saved Successfully!");
-}
-
-
-// Clear Function
-function clearData(){
-
-    localStorage.removeItem("firstName");
-
-    localStorage.removeItem("lastName");
-
-    document.getElementById("fname").value = "";
-
-    document.getElementById("lname").value = "";
-
-    alert("Data Cleared!");
-
-}
+});
 
 </script>
 
