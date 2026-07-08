@@ -1,33 +1,68 @@
-<form id="userForm">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Fees Form</title>
 
-<input
-type="text"
-id="username"
-placeholder="Student Username"
-required>
+<script>
 
-<input
-type="email"
-id="email"
-placeholder="Email Address"
-required>
+const SUPABASE_URL = "https://YOUR_PROJECT.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR_ANON_KEY";
 
-<input
-type="tel"
-id="phone"
-placeholder="Phone Number"
-required>
+document
+.getElementById("userForm")
+.addEventListener("submit", async (e) => {
 
-<input
-type="number"
-id="fees"
-placeholder="Fees Amount"
-required>
+    e.preventDefault();
 
-<button type="submit">
-Save Student
-</button>
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const fees = document.getElementById("fees").value;
 
-</form>
+    const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/students`,
+        {
+            method: "POST",
+            headers: {
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+                "Content-Type": "application/json",
+                "Prefer": "return=representation"
+            },
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                phone: phone,
+                fees: fees
+            })
+        }
+    );
 
-<p id="status"></p>
+    const data = await res.json();
+
+    if (res.ok) {
+
+        document.getElementById("status").innerHTML =
+        "✅ Student Saved Successfully";
+
+        document.getElementById("userForm").reset();
+
+        console.log(data);
+
+    } else {
+
+        document.getElementById("status").innerHTML =
+        "❌ " + data.message;
+
+        console.log(data);
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
