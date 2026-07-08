@@ -1,74 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Fees Form</title>
-
-
-
-<style>
+<style>*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
 
 body{
-font-family:Arial;
-background:#f4f4f4;
+
+background:#121212;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+
 }
 
 .container{
-background:white;
-padding:30px;
+
 width:400px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,.2);
+background:#1e1e1e;
+padding:30px;
+border-radius:15px;
+
+box-shadow:0 0 20px rgba(0,0,0,.5);
+
+}
+
+h1{
+
+text-align:center;
+margin-bottom:20px;
+color:white;
+
 }
 
 input{
+
 width:100%;
-padding:12px;
-margin:10px 0;
-border:1px solid #ccc;
-border-radius:6px;
+padding:15px;
+margin:12px 0;
+
+background:#2d2d2d;
+
+border:none;
+
+outline:none;
+
+border-radius:8px;
+
+color:white;
+
+font-size:16px;
+
+}
+
+input::placeholder{
+
+color:#aaa;
+
 }
 
 button{
+
 width:100%;
-padding:12px;
-background:#4CAF50;
-color:white;
+
+padding:15px;
+
+background:#3b82f6;
+
 border:none;
-border-radius:6px;
-font-size:16px;
+
+color:white;
+
+font-size:18px;
+
+border-radius:8px;
+
 cursor:pointer;
+
+transition:.3s;
+
 }
 
 button:hover{
-background:#388E3C;
+
+background:#2563eb;
+
 }
 
 #message{
-margin-top:15px;
-font-weight:bold;
-text-align:center;
-}
 
-</style>
+margin-top:20px;
+
+text-align:center;
+
+color:#00ff88;
+
+font-size:18px;
+
+}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Form</title>
+
 
 </head>
 <body>
 
 <div class="container">
 
-<h2>Student Fees Form</h2>
+<h1>Student Registration</h1>
 
 <form id="studentForm">
 
 <input
 type="text"
-id="username"
+id="name"
 placeholder="Student Name"
 required
 >
@@ -81,7 +132,7 @@ required
 >
 
 <input
-type="text"
+type="tel"
 id="phone"
 placeholder="Phone Number"
 required
@@ -93,68 +144,54 @@ Save Student
 
 </form>
 
-<div id="message"></div>
+<p id="message"></p>
 
 </div>
 
-<script>
+<script type="module" src="script.js">import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-const SUPABASE_URL = "https://zwczrfjffrfdwsvzlymn.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3Y3pyZmpmZnJmZHdzdnpseW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5ODg2ODEsImV4cCI6MjA5ODU2NDY4MX0.5OE7HUaNnoKWGY2CF533m921zOSVnckCMJmDTQ8LSmE";
+const supabaseUrl = "YOUR_SUPABASE_URL";
+const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
 
-document
-.getElementById("userForm")
-.addEventListener("submit", async (e) => {
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-    e.preventDefault();
+const form = document.getElementById("studentForm");
 
-    const username = document.getElementById("username").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const fees = document.getElementById("fees").value;
+const message = document.getElementById("message");
 
-    const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/students`,
-        {
-            method: "POST",
-            headers: {
-                "apikey": SUPABASE_ANON_KEY,
-                "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-                "Content-Type": "application/json",
-                "Prefer": "return=representation"
-            },
-            body: JSON.stringify({
-                username: username,
-                email: email,
-                phone: phone,
-                fees: fees
-            })
-        }
-    );
+form.addEventListener("submit", async (e)=>{
 
-    const data = await res.json();
+e.preventDefault();
 
-    if (res.ok) {
+const name=document.getElementById("name").value;
+const email=document.getElementById("email").value;
+const phone=document.getElementById("phone").value;
 
-        document.getElementById("status").innerHTML =
-        "✅ Student Saved Successfully";
+const {error}=await supabase
+.from("students")
+.insert([
+{
+name,
+email,
+phone
+}
+]);
 
-        document.getElementById("userForm").reset();
+if(error){
 
-        console.log(data);
+message.style.color="red";
+message.innerText=error.message;
 
-    } else {
+}else{
 
-        document.getElementById("status").innerHTML =
-        "❌ " + data.message;
+message.style.color="#00ff88";
+message.innerText="Student Saved Successfully";
 
-        console.log(data);
+form.reset();
 
-    }
+}
 
-});
-
-</script>
+});</script>
 
 </body>
 </html>
