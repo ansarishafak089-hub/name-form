@@ -1,91 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Fees Form</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-
-body{
-font-family:Arial;
-background:#f4f4f4;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.container{
-background:white;
-padding:30px;
-width:400px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,.2);
-}
-
-input{
-width:100%;
-padding:12px;
-margin:10px 0;
-border:1px solid #ccc;
-border-radius:6px;
-}
-
-button{
-width:100%;
-padding:12px;
-background:#4CAF50;
-color:white;
-border:none;
-border-radius:6px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#388E3C;
-}
-
-#message{
-margin-top:15px;
-font-weight:bold;
-text-align:center;
-}
-
-</style>
-
-</head>
-<body>
-
-<div class="container">
-
-<h2>Student Fees Form</h2>
-
-<form id="studentForm">
+<form id="userForm">
 
 <input
 type="text"
 id="username"
-placeholder="Student Name"
-required
->
+placeholder="Student Username"
+required>
 
 <input
 type="email"
 id="email"
 placeholder="Email Address"
-required
->
+required>
 
 <input
-type="text"
+type="tel"
 id="phone"
 placeholder="Phone Number"
-required
->
+required>
+
+<input
+type="number"
+id="fees"
+placeholder="Fees Amount"
+required>
 
 <button type="submit">
 Save Student
@@ -93,55 +30,4 @@ Save Student
 
 </form>
 
-<div id="message"></div>
-
-</div>
-
-<script>
-
-const supabaseUrl = "https://zwczrfjffrfdwsvzlymn.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3Y3pyZmpmZnJmZHdzdnpseW1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5ODg2ODEsImV4cCI6MjA5ODU2NDY4MX0.5OE7HUaNnoKWGY2CF533m921zOSVnckCMJmDTQ8LSmE";
-
-const supabase = window.supabase.createClient(
-supabaseUrl,
-supabaseKey
-);
-
-const form = document.getElementById("studentForm");
-
-form.addEventListener("submit", async(e)=>{
-
-e.preventDefault();
-
-const username=document.getElementById("username").value;
-const email=document.getElementById("email").value;
-const phone=document.getElementById("phone").value;
-
-const {error}=await supabase
-.from("students")
-.insert([
-{
-username,
-email,
-phone
-}
-]);
-
-if(error){
-
-document.getElementById("message").innerHTML="❌ "+error.message;
-
-}else{
-
-document.getElementById("message").innerHTML="✅ Student Saved Successfully";
-
-form.reset();
-
-}
-
-});
-
-</script>
-
-</body>
-</html>
+<p id="status"></p>
